@@ -79,3 +79,16 @@ void fijarPieza(unsigned char **tablero,
 
 }
 
+void rotarPieza(unsigned char pieza[4]) {
+    unsigned char nueva[4] = {0};
+    for (int i = 0; i < 4; i++) {
+        for (int j = 0; j < 4; j++) {
+            if ((pieza[3-j] >> (7-i)) & 1) {
+                nueva[i] |= (1 << (7-j));
+            }
+        }
+    }
+    for (int i = 0; i < 4; i++) {
+        pieza[i] = nueva[i];
+    }
+}
