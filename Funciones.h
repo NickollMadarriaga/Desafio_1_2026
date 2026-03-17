@@ -28,4 +28,6 @@ bool hayColision(unsigned char **tablero, unsigned char pieza[4],
 void fijarPieza(unsigned char **tablero, unsigned char pieza[4],
                 int posX, int posY);
 
+
+
 #endif

@@ -1,9 +1,11 @@
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include "funciones.h"
 
 using namespace std;
 
-int main()
-{
-    cout << "Hello World!" << endl;
+int main() {
+
     return 0;
 }

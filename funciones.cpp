@@ -1,4 +1,9 @@
 #include <cstdlib>
+#include <iostream>
+#include <ctime>
+#include "funciones.h"
+
+using namespace std;
 
 void generarPieza(unsigned char pieza[4]) {
 
@@ -52,43 +57,75 @@ void generarPieza(unsigned char pieza[4]) {
 
 void moverIzquierda(unsigned char pieza[4]) {
 
-    for (int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++) {
         pieza[i] <<= 1;
     }
-
 }
+
 void moverDerecha(unsigned char pieza[4]) {
 
-    for (int i = 0; i < 4; i++) {
+    for(int i = 0; i < 4; i++) {
         pieza[i] >>= 1;
     }
-
-}
-void fijarPieza(unsigned char **tablero,
-                unsigned char pieza[4],
-                int posX,
-                int posY) {
-
-    for (int i = 0; i < 4; i++) {
-
-        unsigned char filaPieza = pieza[i] >> posX;
-
-        tablero[posY + i][0] |= filaPieza;
-
-    }
-
 }
 
 void rotarPieza(unsigned char pieza[4]) {
+
     unsigned char nueva[4] = {0};
-    for (int i = 0; i < 4; i++) {
-        for (int j = 0; j < 4; j++) {
-            if ((pieza[3-j] >> (7-i)) & 1) {
-                nueva[i] |= (1 << (7-j));
+
+    for(int i = 0; i < 4; i++) {
+        for(int j = 0; j < 4; j++) {
+
+            if((pieza[3 - j] >> (7 - i)) & 1) {
+                nueva[i] |= (1 << (7 - j));
             }
+
         }
     }
-    for (int i = 0; i < 4; i++) {
+
+    for(int i = 0; i < 4; i++) {
         pieza[i] = nueva[i];
     }
 }
+
+bool hayColision(unsigned char **tablero,
+                 unsigned char pieza[4],
+                 int posX,
+                 int posY,
+                 int alto,
+                 int ancho)
+{
+    int bytesFila = ancho / 8;
+
+    for(int i = 0; i < 4; i++)
+    {
+        int filaTablero = posY + i;
+
+        if(filaTablero >= alto)
+            return true;
+
+        unsigned char filaPieza = pieza[i] >> posX;
+
+        for(int j = 0; j < bytesFila; j++)
+        {
+            if(tablero[filaTablero][j] & filaPieza)
+                return true;
+        }
+    }
+
+    return false;
+}
+
+void fijarPieza(unsigned char **tablero,
+                unsigned char pieza[4],
+                int posX,
+                int posY)
+{
+    for(int i = 0; i < 4; i++)
+    {
+        unsigned char filaPieza = pieza[i] >> posX;
+
+        tablero[posY + i][0] |= filaPieza;
+    }
+}
+
