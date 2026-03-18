@@ -128,4 +128,116 @@ void fijarPieza(unsigned char **tablero,
         tablero[posY + i][0] |= filaPieza;
     }
 }
+void crearTablero(unsigned char **&tablero, int alto, int bytesFila)
+{
+    tablero = new unsigned char*[alto];
+
+    for(int i = 0; i < alto; i++)
+    {
+        tablero[i] = new unsigned char[bytesFila];
+
+        for(int j = 0; j < bytesFila; j++)
+        {
+            tablero[i][j] = 0;
+        }
+    }
+}
+
+void liberarTablero(unsigned char **tablero, int alto)
+{
+    for(int i = 0; i < alto; i++)
+    {
+        delete[] tablero[i];
+    }
+
+    delete[] tablero;
+}
+
+void imprimirTablero(unsigned char **tablero, int alto, int ancho)
+{
+    int bytesFila = ancho / 8;
+
+    for(int i = 0; i < alto; i++)
+    {
+        for(int j = 0; j < bytesFila; j++)
+        {
+            for(int bit = 7; bit >= 0; bit--)
+            {
+                if(tablero[i][j] & (1 << bit))
+                    cout << "#";
+                else
+                    cout << ".";
+            }
+        }
+
+        cout << endl;
+    }
+}
+
+bool filaLlena(unsigned char *fila, int bytesFila)
+{
+    for(int i = 0; i < bytesFila; i++)
+    {
+        if(fila[i] != 255)
+            return false;
+    }
+
+    return true;
+}
+
+void eliminarFila(unsigned char **tablero, int fila, int alto,int bytesFila)
+{
+    for(int i = fila; i > 0; i--)
+    {
+        for(int j = 0; j < bytesFila; j++)
+        {
+            tablero[i][j] = tablero[i - 1][j];
+        }
+    }
+
+    for(int j = 0; j < bytesFila; j++)
+    {
+        tablero[0][j] = 0;
+    }
+}
+
+void limpiarFilas(unsigned char **tablero, int alto, int bytesFila)
+{
+    for(int i = 0; i < alto; i++)
+    {
+        if(filaLlena(tablero[i], bytesFila))
+        {
+            eliminarFila(tablero, i, alto, bytesFila);
+            i--;
+        }
+    }
+}
+void imprimirTableroConPieza(unsigned char **tablero,
+                             unsigned char pieza[4],
+                             int posX,
+                             int posY,
+                             int alto,
+                             int ancho)
+{
+
+    for(int i = 0; i < alto; i++)
+    {
+        unsigned char filaTemp = tablero[i][0];
+
+        if(i >= posY && i < posY + 4)
+        {
+            filaTemp |= (pieza[i - posY] >> posX);
+        }
+
+        for(int bit = 7; bit >= 0; bit--)
+        {
+            if(filaTemp & (1 << bit))
+                cout << "#";
+            else
+                cout << ".";
+        }
+
+        cout << endl;
+    }
+}
 

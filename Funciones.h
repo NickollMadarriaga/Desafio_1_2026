@@ -6,7 +6,11 @@ void crearTablero(unsigned char **&tablero, int alto, int bytesFila);
 
 void liberarTablero(unsigned char **tablero, int alto);
 
-void imprimirTablero(unsigned char **tablero, int alto, int ancho);
+void imprimirTableroConPieza(unsigned char **tablero,
+                             unsigned char pieza[4],
+                             int posX,
+                             int posY,
+                             int ancho);
 
 bool filaLlena(unsigned char *fila, int bytesFila);
 
