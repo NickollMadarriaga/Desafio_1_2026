@@ -119,15 +119,33 @@ bool hayColision(unsigned char **tablero,
 void fijarPieza(unsigned char **tablero,
                 unsigned char pieza[4],
                 int posX,
-                int posY)
+                int posY,
+                int ancho)
 {
+    int bytesFila = (ancho + 7) / 8;
+
     for(int i = 0; i < 4; i++)
     {
-        unsigned char filaPieza = pieza[i] >> posX;
+        int fila = posY + i;
 
-        tablero[posY + i][0] |= filaPieza;
+        int byteIndex = posX / 8;
+        int desplazamiento = posX % 8;
+
+        unsigned char parte1 = pieza[i] >> desplazamiento;
+
+        if(byteIndex < bytesFila)
+        {
+            tablero[fila][byteIndex] |= parte1;
+        }
+
+        if(desplazamiento != 0 && byteIndex + 1 < bytesFila)
+        {
+            unsigned char parte2 = pieza[i] << (8 - desplazamiento);
+            tablero[fila][byteIndex + 1] |= parte2;
+        }
     }
 }
+
 void crearTablero(unsigned char **&tablero, int alto, int bytesFila)
 {
     tablero = new unsigned char*[alto];
@@ -151,27 +169,6 @@ void liberarTablero(unsigned char **tablero, int alto)
     }
 
     delete[] tablero;
-}
-
-void imprimirTablero(unsigned char **tablero, int alto, int ancho)
-{
-    int bytesFila = ancho / 8;
-
-    for(int i = 0; i < alto; i++)
-    {
-        for(int j = 0; j < bytesFila; j++)
-        {
-            for(int bit = 7; bit >= 0; bit--)
-            {
-                if(tablero[i][j] & (1 << bit))
-                    cout << "#";
-                else
-                    cout << ".";
-            }
-        }
-
-        cout << endl;
-    }
 }
 
 bool filaLlena(unsigned char *fila, int bytesFila)
@@ -219,24 +216,40 @@ void imprimirTableroConPieza(unsigned char **tablero,
                              int alto,
                              int ancho)
 {
+    int bytesFila = (ancho + 7) / 8;
 
     for(int i = 0; i < alto; i++)
     {
-        unsigned char filaTemp = tablero[i][0];
-
-        if(i >= posY && i < posY + 4)
+        for(int j = 0; j < bytesFila; j++)
         {
-            filaTemp |= (pieza[i - posY] >> posX);
-        }
+            unsigned char filaTemp = tablero[i][j];
 
-        for(int bit = 7; bit >= 0; bit--)
-        {
-            if(filaTemp & (1 << bit))
-                cout << "#";
-            else
-                cout << ".";
-        }
+            // si la pieza está en esta fila
+            if(i >= posY && i < posY + 4)
+            {
+                int byteIndex = posX / 8;
+                int desplazamiento = posX % 8;
 
+                if(j == byteIndex)
+                {
+                    filaTemp |= (pieza[i - posY] >> desplazamiento);
+                }
+
+                if(j == byteIndex + 1 && desplazamiento != 0)
+                {
+                    filaTemp |= (pieza[i - posY] << (8 - desplazamiento));
+                }
+            }
+
+            // imprimir bits
+            for(int bit = 7; bit >= 0; bit--)
+            {
+                if(filaTemp & (1 << bit))
+                    cout << "#";
+                else
+                    cout << ".";
+            }
+        }
         cout << endl;
     }
 }

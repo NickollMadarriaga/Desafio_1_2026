@@ -10,6 +10,7 @@ void imprimirTableroConPieza(unsigned char **tablero,
                              unsigned char pieza[4],
                              int posX,
                              int posY,
+                             int alto,
                              int ancho);
 
 bool filaLlena(unsigned char *fila, int bytesFila);
@@ -30,7 +31,7 @@ bool hayColision(unsigned char **tablero, unsigned char pieza[4],
                  int posX, int posY, int alto, int ancho);
 
 void fijarPieza(unsigned char **tablero, unsigned char pieza[4],
-                int posX, int posY);
+                int posX, int posY, int ancho);
 
 
 
